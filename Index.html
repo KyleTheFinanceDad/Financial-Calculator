@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ECP Tools">
+<meta name="theme-color" content="#FFFFFF">
+<title>Eau Claire Partners</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#F5F4F1;--bg2:#FAFAF8;--surf:#FFFFFF;
+  --bdr:#E2DFD8;--bdr2:#C8C4BC;
+  --txt:#1A1A1A;--txt2:#444;--txt3:#777;
+  --gold:#B8973A;--goldl:#D4B05A;--goldbg:#FAF6EC;--goldbr:#E8D9A0;
+  --grn:#1A7A4E;--grnbg:#F0FAF5;
+  --red:#C0392B;--redbg:#FDF3F2;
+  --teal:#1A6A7A;--tealbg:#F0F8FA;
+  --nav-h:60px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+html{height:100%;overscroll-behavior:none;}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100%;font-size:15px;line-height:1.5;overflow-x:hidden;}
+input,select,textarea{font-family:inherit;font-size:16px;}
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:var(--surf);border-bottom:1px solid var(--bdr);padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;}
+.top-brand{font-family:"Playfair Display",serif;font-size:17px;font-weight:700;color:var(--txt);}
+.top-sub{font-size:9px;color:var(--txt3);letter-spacing:0.06em;text-transform:uppercase;margin-top:1px;}
+.top-client input{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--txt);outline:none;width:130px;}
+.top-client input:focus{border-color:var(--gold);}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surf);border-top:1px solid var(--bdr);display:flex;padding-bottom:var(--safe-b);}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;padding:8px 2px;color:var(--txt3);min-height:var(--nav-h);}
+.bnav-btn.active{color:var(--gold);}
+.bnav-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.bnav-lbl{font-size:9px;letter-spacing:0.04em;font-weight:600;text-transform:uppercase;}
+/* SCROLL */
+.scroll-wrap{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + var(--safe-b) + 20px);}
+/* PANELS */
+.panel{display:none;padding:16px;}.panel.active{display:block;}
+/* TYPOGRAPHY */
+.sec-title{font-family:"Playfair Display",serif;font-size:20px;font-weight:700;color:var(--txt);margin-bottom:4px;}
+.sec-desc{font-size:12px;color:var(--txt3);margin-bottom:16px;line-height:1.5;}
+.page-hd{margin-bottom:16px;}
+/* CARD */
+.card{background:var(--surf);border:1px solid var(--bdr);border-left:3px solid var(--gold);border-radius:10px;padding:16px;margin-bottom:14px;}
+.card.teal{border-left-color:var(--teal);}.card.green{border-left-color:var(--grn);}.card.red{border-left-color:var(--red);}
+.card-t{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;color:var(--gold);margin-bottom:12px;}
+.card-t.teal{color:var(--teal);}.card-t.green{color:var(--grn);}
+/* FIELDS */
+.fld{margin-bottom:14px;}
+.lbl{display:block;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;color:var(--gold);margin-bottom:6px;}
+.inp{width:100%;background:var(--bg2);border:1.5px solid var(--bdr);border-radius:8px;padding:12px 14px;font-size:16px;color:var(--txt);outline:none;-webkit-appearance:none;appearance:none;transition:border-color 0.15s;}
+.inp:focus{border-color:var(--gold);}.inp::placeholder{color:var(--txt3);}
+select.inp{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23777' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
+.iw{position:relative;}.iw .pre{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:15px;font-weight:700;pointer-events:none;}.iw .inp{padding-left:26px;}.iw.sf .inp{padding-right:32px;}.iw .suf{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--txt3);font-size:13px;pointer-events:none;}
+/* SLIDERS */
+.rg{margin-bottom:18px;}.rg-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}.rg-lbl{font-size:13px;color:var(--txt2);}.rg-val{font-family:"Playfair Display",serif;font-size:16px;color:var(--gold);font-weight:700;}
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:var(--bdr2);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold);cursor:pointer;border:3px solid var(--surf);box-shadow:0 0 0 1.5px var(--gold);}
+.rl{display:flex;justify-content:space-between;font-size:10px;color:var(--txt3);margin-top:3px;}
+/* METRICS */
+.metrics{display:grid;gap:10px;margin-bottom:14px;}.metrics.c2{grid-template-columns:1fr 1fr;}.metrics.c3{grid-template-columns:repeat(3,1fr);}
+.metric{background:var(--bg2);border:1px solid var(--bdr);border-radius:8px;padding:12px 14px;text-align:center;}
+.m-lbl{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;color:var(--txt3);margin-bottom:5px;}
+.m-val{font-family:"Playfair Display",serif;font-size:20px;font-weight:700;color:var(--txt);line-height:1;}.m-val.gold{color:var(--gold);}.m-val.green{color:var(--grn);}.m-val.red{color:var(--red);}.m-val.teal{color:var(--teal);}.m-val.lg{font-size:26px;}
+.m-sub{font-size:10px;color:var(--txt3);margin-top:3px;}
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:14px;border-radius:10px;font-size:13px;font-family:"Inter",sans-serif;font-weight:600;cursor:pointer;border:none;min-height:48px;width:100%;margin-bottom:10px;}
+.btn-gold{background:var(--gold);color:#fff;}.btn-gold:active{opacity:0.9;}
+.btn-out{background:transparent;border:1.5px solid var(--bdr);color:var(--txt2);}.btn-out:active{background:var(--goldbg);border-color:var(--gold);color:var(--gold);}
+/* NOTE */
+.note{display:flex;align-items:flex-start;gap:10px;background:var(--goldbg);border:1px solid var(--goldbr);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--txt2);margin-bottom:16px;line-height:1.5;}
+.note svg{width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:1.8;flex-shrink:0;margin-top:1px;}
+.note.teal{background:var(--tealbg);border-color:#9DD0DC;}.note.teal svg{stroke:var(--teal);}
+.note.green{background:var(--grnbg);border-color:#9DE0BC;}.note.green svg{stroke:var(--grn);}
+/* TABS */
+.tabs{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;padding:10px 14px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;color:var(--txt3);white-space:nowrap;}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.tab-content{display:none;}.tab-content.active{display:block;}
+/* RESULT PANELS */
+.rp{background:var(--goldbg);border:1px solid var(--goldbr);border-radius:10px;padding:16px;margin-bottom:14px;}
+.rp-hl{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px;}
+.rp.green{background:var(--grnbg);border-color:#9DE0BC;}.rp.green .rp-hl{color:var(--grn);}
+.rp.teal{background:var(--tealbg);border-color:#9DD0DC;}.rp.teal .rp-hl{color:var(--teal);}
+.rp.red{background:var(--redbg);border-color:#F0BABA;}.rp.red .rp-hl{color:var(--red);}
+/* BARS */
+.sb-bar{height:5px;background:var(--bg);border:1px solid var(--bdr);border-radius:3px;margin-top:4px;overflow:hidden;}
+.sb-fill{height:100%;background:var(--gold);border-radius:3px;}
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);padding:8px;text-align:left;background:var(--bg2);border-bottom:1px solid var(--bdr);font-weight:700;}
+.tbl td{padding:9px 8px;color:var(--txt);border-bottom:1px solid var(--bdr);}
+.tbl td input{width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--bdr);color:var(--txt);font-size:14px;font-family:"Inter",sans-serif;outline:none;padding:4px 0;min-height:36px;}
+.tbl td input:focus{border-bottom-color:var(--gold);}
+.tbl-scroll{overflow-x:auto;max-height:280px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+/* MISC */
+.insight{background:var(--surf);border:1px solid var(--bdr);border-left:3px solid var(--teal);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--txt2);line-height:1.6;}.insight strong{color:var(--teal);}
+.mode-toggle{display:flex;border:1.5px solid var(--bdr);border-radius:8px;overflow:hidden;margin-bottom:16px;}
+.mode-btn{flex:1;padding:12px 8px;background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--txt3);text-align:center;}
+.mode-btn.active{background:var(--gold);color:#fff;}
+.risk-r{display:grid;grid-template-columns:1fr 80px 50px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);}
+.risk-bar-bg{height:5px;background:var(--bg);border:1px solid var(--bdr);border-radius:3px;}.risk-bar-fill{height:5px;border-radius:3px;}
+.cr{display:grid;grid-template-columns:1fr 90px 36px;gap:8px;align-items:center;margin-bottom:8px;}
+.cr input{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:8px;padding:10px 12px;font-size:16px;font-family:inherit;outline:none;width:100%;}
+.cr input:focus{border-color:var(--gold);}
+.cdel{width:36px;height:36px;border-radius:50%;background:var(--redbg);border:1px solid #F0BABA;cursor:pointer;font-size:18px;color:var(--red);display:flex;align-items:center;justify-content:center;}
+.ch-wrap{position:relative;margin:12px 0;}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bdr);}
+.sum-lbl{font-size:13px;color:var(--txt2);}.sum-val{font-family:"Playfair Display",serif;font-size:14px;font-weight:700;color:var(--gold);}
+.sum-val.green{color:var(--grn);}.sum-val.red{color:var(--red);}.sum-val.teal{color:var(--teal);}.sum-val.muted{color:var(--txt3);font-size:12px;font-family:"Inter",sans-serif;}
+.sched-toggle{display:flex;border-bottom:1px solid var(--bdr);}
+.sched-btn{flex:1;padding:10px;background:none;border:none;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--txt3);}
+.sched-btn.active{color:var(--gold);background:var(--goldbg);}
+.ded{display:flex;align-items:center;justify-content:space-between;background:var(--surf);border:1px solid var(--goldbr);border-radius:8px;padding:10px 12px;margin-top:8px;}
+.ded-lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--txt3);}
+.ded-val{font-family:"Playfair Display",serif;font-size:16px;font-weight:700;}
+.rule{height:1px;background:var(--bdr);margin:16px 0;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><div class="top-brand">Eau Claire Partners</div><div class="top-sub">Financial Planning Suite</div></div>
+  <div class="top-client"><input type="text" id="cname" placeholder="Client Name"></div>
+</div>
+<div class="scroll-wrap">
+<!-- BUDGET -->
+<div class="panel active" id="panel-budget">
+<div class="page-hd"><div class="sec-title">Monthly Budget</div><div class="sec-desc">Allocate every dollar of take-home pay. Goal: income minus expenses equals zero.</div></div>
+<div class="card"><div class="card-t">Income</div>
+  <div class="fld"><label class="lbl">Take-Home Pay</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="bi1" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Spouse / Partner</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="bi2" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Other Income</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="bi3" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<div class="metrics c2">
+  <div class="metric"><div class="m-lbl">Total Income</div><div class="m-val gold" id="b-itot">$0</div></div>
+  <div class="metric"><div class="m-lbl">Total Expenses</div><div class="m-val" id="b-etot">$0</div></div>
+  <div class="metric" style="grid-column:1/-1"><div class="m-lbl">Surplus / Deficit</div><div class="m-val lg" id="b-rem">$0</div><div class="m-sub" id="b-rem-n">Zero-based target: $0</div></div>
+</div>
+<div class="card"><div class="card-t">Allocation</div><div id="b-bars"></div><div class="ch-wrap" style="height:190px"><canvas id="bc"></canvas></div></div>
+<div class="card"><div class="card-t">Housing</div>
+  <div class="fld"><label class="lbl">Mortgage / Rent</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="h" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Property Taxes</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="h" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Home Insurance</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="h" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Strata / HOA</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="h" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<div class="card"><div class="card-t">Utilities</div>
+  <div class="fld"><label class="lbl">Electricity / Hydro</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="u" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Gas / Heating</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="u" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Internet</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="u" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Cell Phone</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="u" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<div class="card"><div class="card-t">Food &amp; Household</div>
+  <div class="fld"><label class="lbl">Groceries</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="f" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Dining Out</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="f" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Household Supplies</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="f" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<div class="card"><div class="card-t">Transportation</div>
+  <div class="fld"><label class="lbl">Car Payment(s)</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="t" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Car Insurance</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="t" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Fuel / Transit</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="t" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<div class="card"><div class="card-t">Debt Payments</div>
+  <div class="fld"><label class="lbl">Credit Card Minimums</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="d" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Student Loans</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="d" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Personal Loan / LOC</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="d" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<div class="card"><div class="card-t">Insurance &amp; Savings</div>
+  <div class="fld"><label class="lbl">Life Insurance</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="i" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Critical Illness</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="i" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Disability Insurance</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="i" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">RRSP / TFSA</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="i" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Emergency Fund</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="i" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<div class="card"><div class="card-t">Personal &amp; Lifestyle</div>
+  <div class="fld"><label class="lbl">Clothing</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="p" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Entertainment / Subscriptions</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="p" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Childcare / Education</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="p" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld"><label class="lbl">Health / Dental</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="p" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Miscellaneous</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" data-cat="p" placeholder="0" inputmode="decimal" oninput="calcB()"></div></div>
+</div>
+<button class="btn btn-gold" onclick="shareResults('budget')">&#8679; Share Summary</button>
+<button class="btn btn-out" onclick="resetP('budget')">Reset</button>
+</div>
+
+<!-- DEBT -->
+<div class="panel" id="panel-debt">
+<div class="page-hd"><div class="sec-title">Debt Snowball</div><div class="sec-desc">Smallest to largest. Attack smallest first, roll payments forward.</div></div>
+<div class="card"><div class="card-t">Extra Monthly Payment</div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Beyond all minimums</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="dex" value="200" inputmode="decimal" oninput="calcD()"></div></div>
+</div>
+<div class="metrics c2">
+  <div class="metric"><div class="m-lbl">Total Debt</div><div class="m-val" id="d-tot">$0</div></div>
+  <div class="metric"><div class="m-lbl">Min. Payments</div><div class="m-val" id="d-min">$0</div></div>
+  <div class="metric"><div class="m-lbl">Total Interest</div><div class="m-val red" id="d-int">$0</div></div>
+  <div class="metric"><div class="m-lbl">Months to Free</div><div class="m-val green" id="d-mo">&#8212;</div></div>
+</div>
+<div class="card"><div class="card-t">Your Debts</div>
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+    <table class="tbl"><thead><tr><th>#</th><th>Name</th><th>Balance</th><th>Min $</th><th>Rate %</th></tr></thead>
+    <tbody id="dbody">
+      <tr><td style="color:var(--gold);font-weight:700">1</td><td><input type="text" placeholder="Visa"></td><td><input type="number" placeholder="1500" inputmode="decimal" oninput="calcD()"></td><td><input type="number" placeholder="45" inputmode="decimal" oninput="calcD()"></td><td><input type="number" placeholder="19.99" inputmode="decimal" oninput="calcD()"></td></tr>
+      <tr><td style="color:var(--gold);font-weight:700">2</td><td><input type="text" placeholder="Car Loan"></td><td><input type="number" placeholder="8000" inputmode="decimal" oninput="calcD()"></td><td><input type="number" placeholder="185" inputmode="decimal" oninput="calcD()"></td><td><input type="number" placeholder="6.5" inputmode="decimal" oninput="calcD()"></td></tr>
+      <tr><td style="color:var(--gold);font-weight:700">3</td><td><input type="text" placeholder="Student Loan"></td><td><input type="number" placeholder="15000" inputmode="decimal" oninput="calcD()"></td><td><input type="number" placeholder="200" inputmode="decimal" oninput="calcD()"></td><td><input type="number" placeholder="5.0" inputmode="decimal" oninput="calcD()"></td></tr>
+      <tr><td style="color:var(--gold);font-weight:700">4</td><td><input type="text"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td></tr>
+      <tr><td style="color:var(--gold);font-weight:700">5</td><td><input type="text"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td></tr>
+      <tr><td style="color:var(--gold);font-weight:700">6</td><td><input type="text"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td><td><input type="number" inputmode="decimal" oninput="calcD()"></td></tr>
+    </tbody></table>
+  </div>
+</div>
+<div class="card"><div class="card-t">Payoff Order</div><div id="d-res"><div style="font-size:13px;color:var(--txt3);font-style:italic">Enter debts above.</div></div><div class="ch-wrap" style="height:160px;margin-top:12px"><canvas id="dc"></canvas></div></div>
+<button class="btn btn-gold" onclick="shareResults('debt')">&#8679; Share Summary</button>
+<button class="btn btn-out" onclick="resetP('debt')">Reset</button>
+</div>
+
+<!-- REGISTERED ACCOUNTS -->
+<div class="panel" id="panel-compound">
+<div class="page-hd"><div class="sec-title">Registered Accounts</div><div class="sec-desc">RRSP, TFSA, and FHSA growth with tax deduction summaries.</div></div>
+<div class="tabs">
+  <button class="tab-btn active" id="ci-tab-rrsp" onclick="switchCiTab('rrsp')" style="color:var(--teal);border-bottom-color:var(--teal)">RRSP</button>
+  <button class="tab-btn" id="ci-tab-tfsa" onclick="switchCiTab('tfsa')">TFSA</button>
+  <button class="tab-btn" id="ci-tab-fhsa" onclick="switchCiTab('fhsa')">FHSA</button>
+  <button class="tab-btn" id="ci-tab-combined" onclick="switchCiTab('combined')">&#9646; Combined</button>
+</div>
+<!-- RRSP -->
+<div class="tab-content active" id="ci-content-rrsp">
+  <div class="note teal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Contributions are <strong>tax-deductible</strong>. Growth is tax-deferred. Annual limit: 18% of prior income, max <strong>$32,490 (2025)</strong>.</div>
+  <div class="card teal"><div class="card-t teal">RRSP</div>
+    <div class="fld"><label class="lbl" style="color:var(--teal)">Prior Year Income</label><div class="iw"><span class="pre" style="color:var(--teal)">$</span><input type="number" class="inp" id="rrsp-income" placeholder="80000" inputmode="decimal" oninput="calcC()"></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Existing Balance</span><span class="rg-val" id="rrsp-pv" style="color:var(--teal)">$10,000</span></div><input type="range" min="0" max="500000" step="1000" value="10000" id="rrsp-p" oninput="calcC()"><div class="rl"><span>$0</span><span>$500K</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Monthly Contribution</span><span class="rg-val" id="rrsp-mv" style="color:var(--teal)">$500</span></div><input type="range" min="0" max="3000" step="50" value="500" id="rrsp-m" oninput="calcC()"><div class="rl"><span>$0</span><span>$3,000</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Annual Return</span><span class="rg-val" id="rrsp-rv" style="color:var(--teal)">7%</span></div><input type="range" min="1" max="15" step="0.5" value="7" id="rrsp-r" oninput="calcC()"><div class="rl"><span>1%</span><span>15%</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Investment Period</span><span class="rg-val" id="rrsp-yv" style="color:var(--teal)">25 yrs</span></div><input type="range" min="1" max="50" step="1" value="25" id="rrsp-y" oninput="calcC()"><div class="rl"><span>1 yr</span><span>50 yrs</span></div></div>
+  </div>
+  <div class="metrics c2"><div class="metric"><div class="m-lbl">Projected Value</div><div class="m-val teal" id="rrsp-fv">$0</div></div><div class="metric"><div class="m-lbl">Growth Earned</div><div class="m-val gold" id="rrsp-ea">$0</div></div></div>
+  <div class="rp teal"><div class="rp-hl">Tax Deduction Summary</div>
+    <div class="ded"><div><div class="ded-lbl">Max 2025 Deduction</div><div style="font-size:10px;color:var(--txt3)">18% of income, max $32,490</div></div><div class="ded-val" style="color:var(--teal)" id="rrsp-max-deduction">$0</div></div>
+    <div class="ded" style="margin-top:8px"><div><div class="ded-lbl">Planned Annual Contribution</div></div><div class="ded-val" style="color:var(--txt2)" id="rrsp-annual-contrib">$0</div></div>
+    <div class="ded" style="margin-top:8px"><div><div class="ded-lbl">Est. Tax Refund (30% MTR)</div></div><div class="ded-val" style="color:var(--grn)" id="rrsp-tax-refund">$0</div></div>
+  </div>
+  <div class="card teal"><div class="card-t teal">RRSP Growth</div><div class="ch-wrap" style="height:200px"><canvas id="rrsp-chart"></canvas></div></div>
+</div>
+<!-- TFSA -->
+<div class="tab-content" id="ci-content-tfsa">
+  <div class="note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>After-tax contributions. All growth and withdrawals are <strong>completely tax-free</strong>. 2025 limit: <strong>$7,000</strong>. Cumulative room: <strong>$102,000</strong>.</div>
+  <div class="card"><div class="card-t">TFSA</div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Existing Balance</span><span class="rg-val" id="tfsa-pv">$5,000</span></div><input type="range" min="0" max="500000" step="1000" value="5000" id="tfsa-p" oninput="calcC()"><div class="rl"><span>$0</span><span>$500K</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Monthly Contribution</span><span class="rg-val" id="tfsa-mv">$300</span></div><input type="range" min="0" max="2000" step="25" value="300" id="tfsa-m" oninput="calcC()"><div class="rl"><span>$0</span><span>$2,000</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Annual Return</span><span class="rg-val" id="tfsa-rv">6%</span></div><input type="range" min="1" max="15" step="0.5" value="6" id="tfsa-r" oninput="calcC()"><div class="rl"><span>1%</span><span>15%</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Investment Period</span><span class="rg-val" id="tfsa-yv">20 yrs</span></div><input type="range" min="1" max="50" step="1" value="20" id="tfsa-y" oninput="calcC()"><div class="rl"><span>1 yr</span><span>50 yrs</span></div></div>
+  </div>
+  <div class="metrics c2"><div class="metric"><div class="m-lbl">Projected Value</div><div class="m-val gold" id="tfsa-fv">$0</div></div><div class="metric"><div class="m-lbl">Growth Earned</div><div class="m-val gold" id="tfsa-ea">$0</div></div></div>
+  <div class="rp"><div class="rp-hl">TFSA at a Glance</div>
+    <div class="sum-row"><span class="sum-lbl">2025 Annual Limit</span><span class="sum-val">$7,000</span></div>
+    <div class="sum-row"><span class="sum-lbl">Planned Annual</span><span class="sum-val" id="tfsa-annual-contrib">$0</span></div>
+    <div class="sum-row" style="border:none"><span class="sum-lbl">Tax on Withdrawal</span><span class="sum-val green">$0 — Tax Free</span></div>
+  </div>
+  <div class="card"><div class="card-t">TFSA Growth</div><div class="ch-wrap" style="height:200px"><canvas id="tfsa-chart"></canvas></div></div>
+</div>
+<!-- FHSA -->
+<div class="tab-content" id="ci-content-fhsa">
+  <div class="note green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Deductible like RRSP + tax-free like TFSA on first home withdrawal. Annual: <strong>$8,000</strong>. Lifetime: <strong>$40,000</strong>.</div>
+  <div class="card green"><div class="card-t green">FHSA</div>
+    <div class="fld"><label class="lbl" style="color:var(--grn)">Prior Year Income</label><div class="iw"><span class="pre" style="color:var(--grn)">$</span><input type="number" class="inp" id="fhsa-income" placeholder="80000" inputmode="decimal" oninput="calcC()"></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Existing Balance</span><span class="rg-val" id="fhsa-pv" style="color:var(--grn)">$0</span></div><input type="range" min="0" max="40000" step="500" value="0" id="fhsa-p" oninput="calcC()"><div class="rl"><span>$0</span><span>$40K</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Monthly Contribution</span><span class="rg-val" id="fhsa-mv" style="color:var(--grn)">$500</span></div><input type="range" min="0" max="667" step="25" value="500" id="fhsa-m" oninput="calcC()"><div class="rl"><span>$0</span><span>$667/mo</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Annual Return</span><span class="rg-val" id="fhsa-rv" style="color:var(--grn)">6%</span></div><input type="range" min="1" max="15" step="0.5" value="6" id="fhsa-r" oninput="calcC()"><div class="rl"><span>1%</span><span>15%</span></div></div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Years Until Purchase</span><span class="rg-val" id="fhsa-yv" style="color:var(--grn)">5 yrs</span></div><input type="range" min="1" max="15" step="1" value="5" id="fhsa-y" oninput="calcC()"><div class="rl"><span>1 yr</span><span>15 yrs</span></div></div>
+  </div>
+  <div class="metrics c2"><div class="metric"><div class="m-lbl">Projected Value</div><div class="m-val green" id="fhsa-fv">$0</div><div class="m-sub">Tax-free withdrawal</div></div><div class="metric"><div class="m-lbl">Growth Earned</div><div class="m-val gold" id="fhsa-ea">$0</div></div></div>
+  <div class="rp green"><div class="rp-hl">Tax Deduction Summary</div>
+    <div class="ded"><div><div class="ded-lbl">Annual Deduction (max $8,000)</div></div><div class="ded-val" style="color:var(--grn)" id="fhsa-annual-contrib">$0</div></div>
+    <div class="ded" style="margin-top:8px"><div><div class="ded-lbl">Est. Tax Refund (30% MTR)</div></div><div class="ded-val" style="color:var(--grn)" id="fhsa-tax-refund">$0</div></div>
+  </div>
+  <div class="card green"><div class="card-t green">FHSA Growth to Purchase</div><div class="ch-wrap" style="height:200px"><canvas id="fhsa-chart"></canvas></div></div>
+</div>
+<!-- COMBINED -->
+<div class="tab-content" id="ci-content-combined">
+  <div class="metrics c2">
+    <div class="metric" style="border-left:3px solid var(--teal)"><div class="m-lbl">RRSP</div><div class="m-val teal" id="comb-rrsp">$0</div></div>
+    <div class="metric" style="border-left:3px solid var(--gold)"><div class="m-lbl">TFSA</div><div class="m-val gold" id="comb-tfsa">$0</div></div>
+    <div class="metric" style="border-left:3px solid var(--grn)"><div class="m-lbl">FHSA</div><div class="m-val green" id="comb-fhsa">$0</div></div>
+    <div class="metric" style="background:var(--goldbg);border:1px solid var(--goldbr)"><div class="m-lbl">Combined Total</div><div class="m-val lg gold" id="comb-total">$0</div></div>
+  </div>
+  <div class="metrics c2"><div class="metric"><div class="m-lbl">Total Contributions</div><div class="m-val" id="comb-contrib">$0</div></div><div class="metric"><div class="m-lbl">Total Growth</div><div class="m-val gold" id="comb-growth">$0</div></div></div>
+  <div class="rp"><div class="rp-hl">Tax Deduction Summary</div>
+    <div class="sum-row"><span class="sum-lbl">RRSP Deduction</span><span class="sum-val teal" id="comb-rrsp-ded">$0</span></div>
+    <div class="sum-row"><span class="sum-lbl">FHSA Deduction</span><span class="sum-val green" id="comb-fhsa-ded">$0</span></div>
+    <div class="sum-row"><span class="sum-lbl">TFSA Deduction</span><span class="sum-val muted">$0 — after-tax</span></div>
+    <div class="sum-row"><span class="sum-lbl" style="font-weight:600">Combined Annual Deduction</span><span class="sum-val" id="comb-total-ded">$0</span></div>
+    <div style="background:var(--goldbg);border-radius:8px;padding:14px;margin-top:12px">
+      <div style="font-size:11px;color:var(--txt2);margin-bottom:4px;font-weight:600">Est. Annual Tax Refund (30% MTR)</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;color:var(--grn);font-weight:700" id="comb-refund">$0</div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:4px">Actual refund depends on province and marginal tax rate.</div>
+    </div>
+  </div>
+  <div class="card"><div class="card-t">Combined Growth Over Time</div><div class="ch-wrap" style="height:220px"><canvas id="comb-chart"></canvas></div></div>
+</div>
+<button class="btn btn-gold" onclick="shareResults('compound')">&#8679; Share Summary</button>
+<button class="btn btn-out" onclick="resetP('compound')">Reset</button>
+</div>
+
+<!-- LIFE INSURANCE -->
+<div class="panel" id="panel-life">
+<div class="page-hd"><div class="sec-title">Life Insurance Needs</div><div class="sec-desc">Estimate the right coverage: income, obligations, and dependants.</div></div>
+<div class="card"><div class="card-t">Client Profile</div>
+  <div class="fld"><label class="lbl">Client's Age</label><input type="number" class="inp" id="li-ag" placeholder="35" inputmode="numeric" oninput="calcL()"></div>
+  <div class="fld"><label class="lbl">Annual Income</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="li-in" placeholder="80000" inputmode="decimal" oninput="calcL()"></div></div>
+  <div class="fld"><label class="lbl">Income Replacement Target</label><div class="iw sf"><input type="number" class="inp" id="li-rp" placeholder="70" value="70" inputmode="decimal" oninput="calcL()"><span class="suf">%</span></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Years of Income to Replace</label><input type="number" class="inp" id="li-ry" placeholder="25" inputmode="numeric" oninput="calcL()"><div style="font-size:11px;color:var(--txt3);margin-top:4px">How many years should the benefit cover income loss?</div></div>
+</div>
+<div class="card"><div class="card-t">Dependants</div>
+  <div class="fld"><label class="lbl">Number of Children</label><select class="inp" id="li-nk" onchange="updKids()"><option value="0">0 — No children</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5+</option></select></div>
+  <div id="li-kw" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 90px 36px;gap:8px;margin-bottom:6px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--txt3);font-weight:700">Name</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--txt3);font-weight:700">Age</div><div></div></div>
+    <div id="li-kr"></div>
+  </div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Education Fund (all children)</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="li-ed" placeholder="60000" inputmode="decimal" oninput="calcL()"></div></div>
+</div>
+<div class="card"><div class="card-t">Obligations</div>
+  <div class="fld"><label class="lbl">Mortgage / Outstanding Debt</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="li-mo" placeholder="350000" inputmode="decimal" oninput="calcL()"></div></div>
+  <div class="fld"><label class="lbl">Business Continuity</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="li-bz" placeholder="0" inputmode="decimal" oninput="calcL()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Existing Group Coverage</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="li-ex" placeholder="0" inputmode="decimal" oninput="calcL()"></div></div>
+</div>
+<div class="rp"><div class="rp-hl">Coverage Recommendation</div>
+  <div class="metric" style="background:var(--surf);margin-bottom:12px"><div class="m-lbl">Recommended Coverage</div><div class="m-val lg gold" id="li-rec">$0</div><div class="m-sub">Net of existing coverage</div></div>
+  <div class="metrics c2" style="margin-bottom:0"><div class="metric" style="background:var(--surf)"><div class="m-lbl">Gross Need</div><div class="m-val" id="li-gr">$0</div></div><div class="metric" style="background:var(--surf)"><div class="m-lbl">Suggested Term</div><div class="m-val" id="li-tm">&#8212; yrs</div></div></div>
+</div>
+<div class="card" style="border-left-color:var(--teal)"><div class="card-t teal">Needs Breakdown</div><div id="li-bd"><div style="font-size:13px;color:var(--txt3);font-style:italic">Enter details above.</div></div></div>
+<div class="card"><div class="card-t">Children Summary</div><div id="li-ks"><span style="font-size:13px;color:var(--txt3);font-style:italic">No children entered.</span></div></div>
+<div class="card"><div class="card-t">Advisor Notes</div><textarea class="inp" id="li-no" rows="3" placeholder="Smoker status, health notes, term preference..." style="resize:none;line-height:1.6"></textarea></div>
+<button class="btn btn-gold" onclick="shareResults('life')">&#8679; Share Summary</button>
+<button class="btn btn-out" onclick="resetP('life')">Reset</button>
+</div>
+
+<!-- CI -->
+<div class="panel" id="panel-ci">
+<div class="page-hd"><div class="sec-title">Critical Illness</div><div class="sec-desc">Quantify the financial gap a CI event creates during recovery.</div></div>
+<div class="note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>CI is about surviving, not dying. Walk through each exposure category with your client.</div>
+<div class="card"><div class="card-t">Income During Recovery</div>
+  <div class="fld"><label class="lbl">Monthly Take-Home Income</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-in" placeholder="5500" inputmode="decimal" oninput="calcCI()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Expected Recovery Period</label><select class="inp" id="c2-rc" onchange="calcCI()"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option><option value="24">24 months</option><option value="36">36 months</option></select></div>
+</div>
+<div class="card"><div class="card-t">Medical Costs</div>
+  <div class="fld"><label class="lbl">Drug / Treatment</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-dr" placeholder="5000" inputmode="decimal" oninput="calcCI()"></div></div>
+  <div class="fld"><label class="lbl">Travel for Treatment</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-tr" placeholder="3000" inputmode="decimal" oninput="calcCI()"></div></div>
+  <div class="fld"><label class="lbl">Home Care / Child Care</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-hc" placeholder="8000" inputmode="decimal" oninput="calcCI()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Equipment / Modifications</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-eq" placeholder="2000" inputmode="decimal" oninput="calcCI()"></div></div>
+</div>
+<div class="card"><div class="card-t">Fixed Obligations During Recovery</div>
+  <div class="fld"><label class="lbl">Monthly Mortgage / Rent</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-mo" placeholder="1800" inputmode="decimal" oninput="calcCI()"></div></div>
+  <div class="fld"><label class="lbl">Monthly Debt Payments</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-db" placeholder="600" inputmode="decimal" oninput="calcCI()"></div></div>
+  <div class="fld" style="margin-bottom:0"><label class="lbl">Emergency Savings Available</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="c2-sv" placeholder="5000" inputmode="decimal" oninput="calcCI()"></div></div>
+</div>
+<div class="rp red"><div class="rp-hl">Financial Exposure</div>
+  <div class="metric" style="background:var(--surf);margin-bottom:12px"><div class="m-lbl">Recommended CI Coverage</div><div class="m-val lg red" id="c2-rec">$0</div></div>
+  <div class="metrics c2" style="margin-bottom:0">
+    <div class="metric" style="background:var(--surf)"><div class="m-lbl">Income Lost</div><div class="m-val" id="c2-il">$0</div></div>
+    <div class="metric" style="background:var(--surf)"><div class="m-lbl">Medical Costs</div><div class="m-val" id="c2-md">$0</div></div>
+    <div class="metric" style="background:var(--surf);grid-column:1/-1"><div class="m-lbl">Fixed Obligations</div><div class="m-val" id="c2-fx">$0</div></div>
+  </div>
+</div>
+<div class="card"><div class="card-t">Canadian CI Statistics</div>
+  <div style="font-size:11px;color:var(--txt3);margin-bottom:10px">Lifetime probability for Canadians</div>
+  <div class="risk-r"><span style="font-size:13px;color:var(--txt2)">Heart Attack / Stroke</span><div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:56%;background:var(--red)"></div></div></div><span style="font-size:11px;color:var(--txt3)">1 in 2</span></div>
+  <div class="risk-r"><span style="font-size:13px;color:var(--txt2)">Cancer</span><div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:50%;background:var(--red)"></div></div></div><span style="font-size:11px;color:var(--txt3)">1 in 2</span></div>
+  <div class="risk-r"><span style="font-size:13px;color:var(--txt2)">Any Severe Illness</span><div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:66%;background:var(--gold)"></div></div></div><span style="font-size:11px;color:var(--txt3)">2 in 3</span></div>
+  <div class="risk-r" style="border:none"><span style="font-size:13px;color:var(--txt2)">Survival Rate</span><div><div class="risk-bar-bg"><div class="risk-bar-fill" style="width:90%;background:var(--grn)"></div></div></div><span style="font-size:11px;color:var(--txt3)">&gt;90%</span></div>
+  <div class="insight"><strong>Key insight:</strong> The chance of <em>surviving</em> a critical illness is far higher than dying from one. Life insurance covers death — CI covers survival. Both are essential.</div>
+</div>
+<div class="card"><div class="card-t">Advisor Notes</div><textarea class="inp" id="c2-no" rows="3" placeholder="Underwriting notes, health history..." style="resize:none;line-height:1.6"></textarea></div>
+<button class="btn btn-gold" onclick="shareResults('ci')">&#8679; Share Summary</button>
+<button class="btn btn-out" onclick="resetP('ci')">Reset</button>
+</div>
+
+<!-- MORE: Mortgage / RESP / Loan -->
+<div class="panel" id="panel-more">
+<div class="page-hd"><div class="sec-title">More Calculators</div><div class="sec-desc">Mortgage amortization, RESP, and loan tools.</div></div>
+<div class="tabs">
+  <button class="tab-btn active" id="more-tab-amort" onclick="switchMoreTab('amort')">Mortgage</button>
+  <button class="tab-btn" id="more-tab-resp" onclick="switchMoreTab('resp')">RESP</button>
+  <button class="tab-btn" id="more-tab-loan" onclick="switchMoreTab('loan')">Loan</button>
+</div>
+<!-- MORTGAGE -->
+<div class="tab-content active" id="more-content-amort">
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="am-mode-fwd" onclick="setAmMode('forward')">&#8594; Price to Payment</button>
+    <button class="mode-btn" id="am-mode-rev" onclick="setAmMode('reverse')">&#8592; Payment to Price</button>
+  </div>
+  <div id="am-forward-fields"><div class="card"><div class="card-t">Mortgage Details</div>
+    <div class="fld"><label class="lbl">Home Purchase Price</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="am-price" placeholder="600000" inputmode="decimal" oninput="calcAm()"></div></div>
+    <div class="fld" style="margin-bottom:0"><label class="lbl">Down Payment</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="am-down" placeholder="120000" inputmode="decimal" oninput="calcAm()"></div></div>
+  </div></div>
+  <div id="am-reverse-fields" style="display:none">
+    <div class="note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Enter what your client can afford per period to find the maximum home price.</div>
+    <div class="card"><div class="card-t">Affordability Budget</div>
+      <div class="fld"><label class="lbl">Maximum Payment Budget</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="am-budget" placeholder="2500" inputmode="decimal" oninput="calcAm()"></div><div style="font-size:11px;color:var(--txt3);margin-top:4px">Per period matching selected frequency</div></div>
+      <div class="fld" style="margin-bottom:0"><label class="lbl">Down Payment Available</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="am-down-rev" placeholder="80000" inputmode="decimal" oninput="calcAm()"></div></div>
+    </div>
+  </div>
+  <div id="am-reverse-result" style="display:none">
+    <div class="rp green"><div class="rp-hl">Max Affordability</div>
+      <div class="metric" style="background:var(--surf);margin-bottom:10px"><div class="m-lbl">Maximum Purchase Price</div><div class="m-val lg green" id="am-rev-price">$0</div></div>
+      <div class="metrics c2" style="margin-bottom:0">
+        <div class="metric" style="background:var(--surf)"><div class="m-lbl">Max Mortgage</div><div class="m-val gold" id="am-rev-principal">$0</div></div>
+        <div class="metric" style="background:var(--surf)"><div class="m-lbl">Down Payment %</div><div class="m-val" id="am-rev-downpct">0%</div></div>
+        <div class="metric" style="background:var(--surf);grid-column:1/-1"><div class="m-lbl">CMHC Insurance Required?</div><div class="m-val" id="am-rev-cmhc" style="font-size:14px">&#8212;</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="card-t">Loan Parameters</div>
+    <div class="fld"><label class="lbl">Annual Interest Rate</label><div class="iw sf"><input type="number" class="inp" id="am-rate" placeholder="5.5" value="5.5" step="0.05" inputmode="decimal" oninput="calcAm()"><span class="suf">%</span></div></div>
+    <div class="fld"><label class="lbl">Amortization Period</label><select class="inp" id="am-years" onchange="calcAm()"><option value="10">10 years</option><option value="15">15 years</option><option value="20">20 years</option><option value="25" selected>25 years</option><option value="30">30 years</option></select></div>
+    <div class="fld"><label class="lbl">Payment Frequency</label><select class="inp" id="am-freq" onchange="calcAm()"><option value="12">Monthly</option><option value="26">Bi-Weekly</option><option value="52">Weekly</option></select></div>
+    <div class="fld"><label class="lbl">Extra per Payment</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="am-extra" placeholder="0" inputmode="decimal" oninput="calcAm()"></div></div>
+    <div class="fld" style="margin-bottom:0"><label class="lbl">Annual Lump Sum</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="am-lump" placeholder="0" inputmode="decimal" oninput="calcAm()"></div></div>
+  </div>
+  <div class="metrics c2">
+    <div class="metric"><div class="m-lbl" id="am-lbl-principal">Mortgage Amount</div><div class="m-val" id="am-principal">$0</div></div>
+    <div class="metric"><div class="m-lbl" id="am-lbl-payment">Payment Amount</div><div class="m-val gold" id="am-payment">$0</div></div>
+    <div class="metric"><div class="m-lbl">Total Interest</div><div class="m-val red" id="am-total-int">$0</div></div>
+    <div class="metric"><div class="m-lbl">Total Cost</div><div class="m-val" id="am-total-cost">$0</div></div>
+  </div>
+  <div id="am-prepay-result"></div>
+  <div class="card"><div class="card-t">Balance Over Time</div><div class="ch-wrap" style="height:180px"><canvas id="am-chart"></canvas></div></div>
+  <div class="card" style="padding:0"><div class="card-t" style="padding:14px 16px 0">Amortization Schedule</div>
+    <div class="tbl-scroll"><table class="tbl"><thead><tr><th>Year</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead><tbody id="am-tbody"><tr><td colspan="4" style="text-align:center;color:var(--txt3);font-style:italic;padding:16px">Enter details above.</td></tr></tbody></table></div>
+  </div>
+  <button class="btn btn-gold" onclick="shareResults('amort')">&#8679; Share Summary</button>
+  <button class="btn btn-out" onclick="resetP('amort')">Reset</button>
+</div>
+<!-- RESP -->
+<div class="tab-content" id="more-content-resp">
+  <div class="note green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>CESG matches 20% on first $2,500/yr = <strong>$500/yr</strong>, max <strong>$7,200 lifetime</strong> per child.</div>
+  <div class="card"><div class="card-t">Child Information</div>
+    <div class="fld"><label class="lbl">Child's Current Age</label><input type="number" class="inp" id="rsp-age" placeholder="0" min="0" max="17" inputmode="numeric" oninput="calcRsp()"></div>
+    <div class="fld" style="margin-bottom:0"><label class="lbl">University Start Age</label><select class="inp" id="rsp-uni" onchange="calcRsp()"><option value="17">17</option><option value="18" selected>18</option><option value="19">19</option></select></div>
+  </div>
+  <div class="card"><div class="card-t">Contributions</div>
+    <div class="fld"><label class="lbl">Monthly Contribution</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="rsp-monthly" placeholder="200" value="200" inputmode="decimal" oninput="calcRsp()"></div><div style="font-size:11px;color:var(--txt3);margin-top:4px">$208.33/mo maximizes annual CESG</div></div>
+    <div class="fld"><label class="lbl">Current RESP Balance</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="rsp-existing" placeholder="0" inputmode="decimal" oninput="calcRsp()"></div></div>
+    <div class="fld" style="margin-bottom:0"><label class="lbl">Lump Sum (this year)</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="rsp-lump" placeholder="0" inputmode="decimal" oninput="calcRsp()"></div></div>
+  </div>
+  <div class="card"><div class="card-t">Growth Rate</div>
+    <div class="rg"><div class="rg-hd"><span class="rg-lbl">Expected Annual Return</span><span class="rg-val" id="rsp-rv">5%</span></div><input type="range" min="1" max="12" step="0.5" value="5" id="rsp-rate" oninput="calcRsp()"><div class="rl"><span>1%</span><span>12%</span></div></div>
+    <div class="fld" style="margin-bottom:0"><label class="lbl">Family Net Income</label><select class="inp" id="rsp-income" onchange="calcRsp()"><option value="0">Above $111,733 — Base CESG (20%)</option><option value="100">$55,867–$111,733 — +10% on first $500</option><option value="200">Under $55,867 — +20% on first $500</option></select></div>
+  </div>
+  <div class="rp green"><div class="rp-hl">Projected RESP at University</div>
+    <div class="metric" style="background:var(--surf);margin-bottom:10px"><div class="m-lbl">Projected Total</div><div class="m-val lg green" id="rsp-total">$0</div><div class="m-sub">Contributions + CESG + Growth</div></div>
+    <div class="metrics c2" style="margin-bottom:0">
+      <div class="metric" style="background:var(--surf)"><div class="m-lbl">Contributions</div><div class="m-val" id="rsp-contrib">$0</div></div>
+      <div class="metric" style="background:var(--surf)"><div class="m-lbl">CESG Grants</div><div class="m-val gold" id="rsp-cesg">$0</div></div>
+      <div class="metric" style="background:var(--surf)"><div class="m-lbl">Growth</div><div class="m-val green" id="rsp-growth">$0</div></div>
+      <div class="metric" style="background:var(--surf)"><div class="m-lbl">CESG Remaining</div><div class="m-val gold" id="rsp-cesg-rem">$7,200</div></div>
+    </div>
+  </div>
+  <div class="card green"><div class="card-t green">RESP Growth Over Time</div><div class="ch-wrap" style="height:200px"><canvas id="rsp-chart"></canvas></div></div>
+  <div class="card"><div class="card-t">CESG Key Facts</div>
+    <div class="sum-row"><span class="sum-lbl">Annual limit (CESG eligible)</span><span class="sum-val">$2,500</span></div>
+    <div class="sum-row"><span class="sum-lbl">Max CESG per year</span><span class="sum-val">$500</span></div>
+    <div class="sum-row"><span class="sum-lbl">Lifetime CESG per child</span><span class="sum-val">$7,200</span></div>
+    <div class="sum-row" style="border:none"><span class="sum-lbl">RESP lifetime limit</span><span class="sum-val">$50,000</span></div>
+  </div>
+  <button class="btn btn-gold" onclick="shareResults('resp')">&#8679; Share Summary</button>
+  <button class="btn btn-out" onclick="resetP('resp')">Reset</button>
+</div>
+<!-- LOAN -->
+<div class="tab-content" id="more-content-loan">
+  <div class="card"><div class="card-t">Loan Details</div>
+    <div class="fld"><label class="lbl">Loan Type</label><select class="inp" id="ln-type" onchange="calcLoan()"><option value="auto">Auto Loan</option><option value="personal">Personal Loan</option><option value="student">Student Loan</option><option value="heloc">HELOC / LOC</option><option value="other">Other</option></select></div>
+    <div class="fld"><label class="lbl">Loan Amount</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="ln-amount" placeholder="25000" inputmode="decimal" oninput="calcLoan()"></div></div>
+    <div class="fld"><label class="lbl">Annual Interest Rate</label><div class="iw sf"><input type="number" class="inp" id="ln-rate" placeholder="7.5" value="7.5" step="0.1" inputmode="decimal" oninput="calcLoan()"><span class="suf">%</span></div></div>
+    <div class="fld"><label class="lbl">Loan Term</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><input type="number" class="inp" id="ln-term" placeholder="5" value="5" inputmode="numeric" oninput="calcLoan()"><select class="inp" id="ln-termunit" onchange="calcLoan()"><option value="years">Years</option><option value="months">Months</option></select></div></div>
+    <div class="fld"><label class="lbl">Payment Frequency</label><select class="inp" id="ln-freq" onchange="calcLoan()"><option value="12">Monthly</option><option value="26">Bi-Weekly</option><option value="52">Weekly</option></select></div>
+    <div class="fld"><label class="lbl">Extra per Payment</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="ln-extra" placeholder="0" inputmode="decimal" oninput="calcLoan()"></div></div>
+    <div class="fld" style="margin-bottom:0"><label class="lbl">One-Time Lump Sum</label><div class="iw"><span class="pre">$</span><input type="number" class="inp" id="ln-lump" placeholder="0" inputmode="decimal" oninput="calcLoan()"></div></div>
+  </div>
+  <div class="metrics c2">
+    <div class="metric"><div class="m-lbl">Regular Payment</div><div class="m-val gold" id="ln-pmt">$0</div><div class="m-sub" id="ln-pmt-freq">per month</div></div>
+    <div class="metric"><div class="m-lbl">Payoff Date</div><div class="m-val" id="ln-payoff" style="font-size:16px">&#8212;</div></div>
+    <div class="metric"><div class="m-lbl">Total Interest</div><div class="m-val red" id="ln-tint">$0</div></div>
+    <div class="metric"><div class="m-lbl">Total Cost</div><div class="m-val" id="ln-tcost">$0</div></div>
+  </div>
+  <div id="ln-savings-note"></div>
+  <div class="card"><div class="card-t">Payment Breakdown</div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div class="ch-wrap" style="height:150px;width:150px;flex-shrink:0;margin:0"><canvas id="ln-pie"></canvas></div>
+      <div style="flex:1;min-width:120px">
+        <div class="sum-row"><span class="sum-lbl">Principal</span><span class="sum-val" id="ln-pie-prin">$0</span></div>
+        <div class="sum-row"><span class="sum-lbl">Total Interest</span><span class="sum-val red" id="ln-pie-int">$0</span></div>
+        <div class="sum-row"><span class="sum-lbl">Interest %</span><span class="sum-val" id="ln-int-pct">0%</span></div>
+        <div class="sum-row" style="border:none"><span class="sum-lbl">Break-even #</span><span class="sum-val" id="ln-breakeven">&#8212;</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="card-t">Balance Over Time</div><div class="ch-wrap" style="height:190px"><canvas id="ln-line"></canvas></div></div>
+  <div class="card" style="padding:0">
+    <div class="sched-toggle"><button class="sched-btn active" id="sched-mo-btn" onclick="setSchedView('monthly')">Monthly</button><button class="sched-btn" id="sched-yr-btn" onclick="setSchedView('annual')">Annual</button></div>
+    <div class="tbl-scroll"><table class="tbl"><thead><tr><th>#</th><th>Date</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead><tbody id="ln-sched-body"><tr><td colspan="6" style="text-align:center;color:var(--txt3);font-style:italic;padding:16px">Enter details above.</td></tr></tbody></table></div>
+  </div>
+  <button class="btn btn-gold" onclick="shareResults('loan')">&#8679; Share Summary</button>
+  <button class="btn btn-out" onclick="resetP('loan')">Reset</button>
+</div>
+</div><!-- /panel-more -->
+
+</div><!-- /scroll-wrap -->
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bnav-btn active" id="nav-budget" onclick="showPanel('budget',this)"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h2M11 15h4"/></svg><span class="bnav-lbl">Budget</span></button>
+  <button class="bnav-btn" id="nav-debt" onclick="showPanel('debt',this)"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg><span class="bnav-lbl">Debt</span></button>
+  <button class="bnav-btn" id="nav-compound" onclick="showPanel('compound',this)"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg><span class="bnav-lbl">Accounts</span></button>
+  <button class="bnav-btn" id="nav-life" onclick="showPanel('life',this)"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="bnav-lbl">Life</span></button>
+  <button class="bnav-btn" id="nav-ci" onclick="showPanel('ci',this)"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="bnav-lbl">CI</span></button>
+  <button class="bnav-btn" id="nav-more" onclick="showPanel('more',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg><span class="bnav-lbl">More</span></button>
+</nav>
+
+<script>
+
+function showPanel(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='compound')calcC();
+  if(id==='ci')calcCI();
+  if(id==='more'){calcAm();calcRsp();calcLoan();}
+}
+const fmt=n=>'$'+Math.round(n).toLocaleString('en-CA');
+const fmtP=n=>n.toFixed(1)+'%';
+const V=id=>parseFloat(document.getElementById(id).value)||0;
+
+/* BUDGET */
+let BC;
+function calcB(){
+  const inc=V('bi1')+V('bi2')+V('bi3');
+  document.getElementById('b-itot').textContent=fmt(inc);
+  const cats={h:0,u:0,f:0,t:0,d:0,i:0,p:0};
+  document.querySelectorAll('.inp[data-cat]').forEach(x=>{const c=x.dataset.cat;if(c)cats[c]+=parseFloat(x.value)||0;});
+  const cm={h:'ch',u:'cu',f:'cf',t:'ct',d:'cd',i:'ci',p:'cp'};
+  Object.entries(cm).forEach(([k,id])=>document.getElementById(id).textContent=fmt(cats[k]));
+  const tot=Object.values(cats).reduce((a,b)=>a+b,0);
+  document.getElementById('b-etot').textContent=fmt(tot);
+  const rem=inc-tot;
+  const re=document.getElementById('b-rem');
+  re.textContent=fmt(rem);re.className='m-val lg '+(rem>=0?'green':'red');
+  document.getElementById('b-rem-n').textContent=rem>=0?'Surplus — allocate to goals':'Over budget — review expenses';
+  const cl=['Housing','Utilities','Food & HH','Transport','Debt','Ins & Savings','Personal'];
+  const cc2=['#B8973A','#1A6A7A','#1A7A4E','#5B3A8A','#C0392B','#D4B05A','#8A8E96'];
+  const ck=['h','u','f','t','d','i','p'];
+  let bh='';
+  ck.forEach((k,i)=>{const pct=inc>0?Math.min(cats[k]/inc*100,100):0;bh+=`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;"><span style="font-size:11px;color:var(--text-mid);">${cl[i]}</span><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);">${fmtP(pct)}</span></div><div class="sb-bar"><div class="sb-fill" style="width:${pct}%;background:${cc2[i]};"></div></div></div>`;});
+  document.getElementById('b-bars').innerHTML=bh;
+  const ctx=document.getElementById('bc').getContext('2d');
+  if(BC)BC.destroy();
+  const vals=ck.map(k=>cats[k]);const hd=vals.some(x=>x>0);
+  BC=new Chart(ctx,{type:'doughnut',data:{labels:cl,datasets:[{data:hd?vals:[1],backgroundColor:hd?cc2:['#E2DFD8'],borderColor:'#FAFAF8',borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#444444',font:{size:10,family:"'Inter',sans-serif"},boxWidth:10,padding:8}}}}});
+}
+
+/* DEBT */
+let DC;
+function gD(){return Array.from(document.querySelectorAll('#dbody tr')).map(r=>{const ins=r.querySelectorAll('input');const bal=parseFloat(ins[1].value)||0;if(!bal)return null;return{name:ins[0].value||'Debt',balance:bal,min:parseFloat(ins[2].value)||0,rate:parseFloat(ins[3].value)||0};}).filter(Boolean).sort((a,b)=>a.balance-b.balance);}
+function calcD(){
+  const debts=gD(),ex=V('dex');
+  const tb=debts.reduce((s,d)=>s+d.balance,0),tm=debts.reduce((s,d)=>s+d.min,0);
+  document.getElementById('d-tot').textContent=fmt(tb);document.getElementById('d-min').textContent=fmt(tm);
+  if(!debts.length){document.getElementById('d-int').textContent='$0';document.getElementById('d-mo').textContent='—';document.getElementById('d-res').innerHTML='<div style="font-size:12px;color:var(--text-muted);font-style:italic;">Enter debts to see payoff plan.</div>';return;}
+  let rem=debts.map(d=>({...d,bal:d.balance}));let ti=0,mo=0,ae=ex;
+  while(rem.some(d=>d.bal>0.01)&&mo<600){mo++;rem.forEach(d=>{if(d.bal<=0)return;const i=d.bal*(d.rate/100/12);ti+=i;d.bal+=i;});rem.forEach(d=>{if(d.bal<=0)return;d.bal=Math.max(0,d.bal-Math.min(d.min,d.bal));});let bud=ae;for(let d of rem){if(d.bal<=0.01)continue;const p=Math.min(bud,d.bal);d.bal-=p;bud-=p;if(d.bal<=0.01){d.bal=0;ae+=d.min;}break;}}
+  document.getElementById('d-int').textContent=fmt(ti);document.getElementById('d-mo').textContent=mo<600?(mo+' mo'):'—';
+  const mb=Math.max(...debts.map(d=>d.balance));let h='';
+  debts.forEach((d,i)=>{const w=mb>0?(d.balance/mb*100):0;h+=`<div style="margin-bottom:12px;"><div style="display:flex;align-items:center;gap:9px;margin-bottom:3px;"><span class="dnum">${i+1}</span><span style="flex:1;font-size:12px;color:var(--text);">${d.name}</span><span style="font-family:'Playfair Display',serif;font-size:14px;color:var(--gold);">${fmt(d.balance)}</span></div><div class="sb-bar"><div class="sb-fill" style="width:${w}%;"></div></div><div style="font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-top:2px;">Min: ${fmt(d.min)}/mo &middot; ${d.rate}% APR</div></div>`;});
+  document.getElementById('d-res').innerHTML=h;
+  const ctx=document.getElementById('dc').getContext('2d');if(DC)DC.destroy();
+  DC=new Chart(ctx,{type:'bar',data:{labels:debts.map(d=>d.name.length>12?d.name.substring(0,12)+'...':d.name),datasets:[{label:'Balance',data:debts.map(d=>d.balance),backgroundColor:'#B8973A',borderRadius:3,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#777',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#777',font:{size:10},callback:v=>'$'+Math.round(v/1000)+'K'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+}
+
+/* COMPOUND */
+let ChartRRSP, ChartTFSA, ChartFHSA, ChartComb;
+
+function switchCiTab(tab) {
+  ['rrsp','tfsa','fhsa','combined'].forEach(t => {
+    const btn = document.getElementById('ci-tab-'+t);
+    const content = document.getElementById('ci-content-'+t);
+    const isActive = t === tab;
+    btn.style.color = isActive ? (t==='rrsp'?'var(--teal)':t==='tfsa'?'var(--gold)':t==='fhsa'?'var(--green)':'var(--gold)') : 'var(--text-muted)';
+    btn.style.borderBottomColor = isActive ? (t==='rrsp'?'var(--teal)':t==='tfsa'?'var(--gold)':t==='fhsa'?'var(--green)':'var(--gold)') : 'transparent';
+    content.style.display = isActive ? 'block' : 'none';
+  });
+}
+
+function calcFV(p, m, r, y) {
+  // Monthly compounding
+  const fr = 12;
+  const rr = r / 100 / fr;
+  const n = fr * y;
+  let fv = p * Math.pow(1 + rr, n);
+  if (rr > 0) fv += m * (Math.pow(1 + rr, n) - 1) / rr;
+  else fv += m * n;
+  return fv;
+}
+
+function calcFVByYear(p, m, r, y) {
+  const fr = 12;
+  const rr = r / 100 / fr;
+  const labels = [], contrib = [], values = [];
+  for (let i = 0; i <= y; i++) {
+    const n = fr * i;
+    let fvy = p * Math.pow(1 + rr, n);
+    if (rr > 0 && n > 0) fvy += m * (Math.pow(1 + rr, n) - 1) / rr;
+    else fvy += m * n;
+    labels.push(i === 0 ? 'Now' : 'Yr ' + i);
+    contrib.push(Math.round(p + m * 12 * i));
+    values.push(Math.round(fvy));
+  }
+  return { labels, contrib, values };
+}
+
+function makeLineChart(ctx, data, colour, contribColour) {
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: data.labels,
+      datasets: [
+        { label: 'Projected Value', data: data.values, borderColor: colour, backgroundColor: colour.replace(')',',0.08)').replace('rgb','rgba'), fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+        { label: 'Contributions', data: data.contrib, borderColor: '#C8C4BC', backgroundColor: 'rgba(200,196,188,0.04)', fill: true, tension: 0.2, pointRadius: 0, borderWidth: 1, borderDash: [4, 4] }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#777', font: { size: 10, family: "'Inter',sans-serif" }, boxWidth: 10 } } },
+      scales: {
+        x: { ticks: { color: '#777', font: { size: 9 }, maxTicksLimit: 10 }, grid: { display: false } },
+        y: { ticks: { color: '#777', font: { size: 9 }, callback: v => '$' + Math.round(v / 1000) + 'K' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+}
+
+function calcC() {
+  // ── RRSP ──
+  const rp = parseFloat(document.getElementById('rrsp-p').value)||0;
+  const rm = parseFloat(document.getElementById('rrsp-m').value)||0;
+  const rr = parseFloat(document.getElementById('rrsp-r').value)||7;
+  const ry = parseInt(document.getElementById('rrsp-y').value)||25;
+  const rIncome = parseFloat(document.getElementById('rrsp-income').value)||0;
+
+  document.getElementById('rrsp-pv').textContent = fmt(rp);
+  document.getElementById('rrsp-mv').textContent = fmt(rm)+'/mo';
+  document.getElementById('rrsp-rv').textContent = rr+'%';
+  document.getElementById('rrsp-yv').textContent = ry+' yr'+(ry>1?'s':'');
+
+  const rrspFV = calcFV(rp, rm, rr, ry);
+  const rrspCo = rp + rm * 12 * ry;
+  const rrspEa = rrspFV - rrspCo;
+  const rrspROI = rrspCo > 0 ? (rrspEa / rrspCo * 100) : 0;
+  const rrspMaxDed = Math.min(rIncome * 0.18, 32490);
+  const rrspAnnualContrib = rm * 12;
+  const rrspActualDed = Math.min(rrspAnnualContrib, rrspMaxDed);
+  const rrspRefund = rrspActualDed * 0.30;
+
+  document.getElementById('rrsp-fv').textContent = fmt(rrspFV);
+  document.getElementById('rrsp-co').textContent = fmt(rrspCo);
+  document.getElementById('rrsp-ea').textContent = fmt(rrspEa);
+  document.getElementById('rrsp-roi').textContent = fmtP(rrspROI);
+  document.getElementById('rrsp-max-deduction').textContent = fmt(rrspMaxDed);
+  document.getElementById('rrsp-annual-contrib').textContent = fmt(rrspAnnualContrib);
+  document.getElementById('rrsp-tax-refund').textContent = fmt(rrspRefund);
+
+  const rrspData = calcFVByYear(rp, rm, rr, ry);
+  const rrspCtx = document.getElementById('rrsp-chart').getContext('2d');
+  if (ChartRRSP) ChartRRSP.destroy();
+  ChartRRSP = makeLineChart(rrspCtx, rrspData, 'rgb(26,106,122)', '#1A6A7A');
+
+  // ── TFSA ──
+  const tp = parseFloat(document.getElementById('tfsa-p').value)||0;
+  const tm = parseFloat(document.getElementById('tfsa-m').value)||0;
+  const tr = parseFloat(document.getElementById('tfsa-r').value)||6;
+  const ty = parseInt(document.getElementById('tfsa-y').value)||20;
+
+  document.getElementById('tfsa-pv').textContent = fmt(tp);
+  document.getElementById('tfsa-mv').textContent = fmt(tm)+'/mo';
+  document.getElementById('tfsa-rv').textContent = tr+'%';
+  document.getElementById('tfsa-yv').textContent = ty+' yr'+(ty>1?'s':'');
+
+  const tfsaFV = calcFV(tp, tm, tr, ty);
+  const tfsaCo = tp + tm * 12 * ty;
+  const tfsaEa = tfsaFV - tfsaCo;
+  const tfsaROI = tfsaCo > 0 ? (tfsaEa / tfsaCo * 100) : 0;
+
+  document.getElementById('tfsa-fv').textContent = fmt(tfsaFV);
+  document.getElementById('tfsa-co').textContent = fmt(tfsaCo);
+  document.getElementById('tfsa-ea').textContent = fmt(tfsaEa);
+  document.getElementById('tfsa-roi').textContent = fmtP(tfsaROI);
+  document.getElementById('tfsa-annual-contrib').textContent = fmt(tm * 12);
+
+  const tfsaData = calcFVByYear(tp, tm, tr, ty);
+  const tfsaCtx = document.getElementById('tfsa-chart').getContext('2d');
+  if (ChartTFSA) ChartTFSA.destroy();
+  ChartTFSA = makeLineChart(tfsaCtx, tfsaData, 'rgb(184,151,58)', '#B8973A');
+
+  // ── FHSA ──
+  const fp = parseFloat(document.getElementById('fhsa-p').value)||0;
+  const fm = parseFloat(document.getElementById('fhsa-m').value)||0;
+  const fr2 = parseFloat(document.getElementById('fhsa-r').value)||6;
+  const fy = parseInt(document.getElementById('fhsa-y').value)||5;
+
+  document.getElementById('fhsa-pv').textContent = fmt(fp);
+  document.getElementById('fhsa-mv').textContent = fmt(fm)+'/mo';
+  document.getElementById('fhsa-rv').textContent = fr2+'%';
+  document.getElementById('fhsa-yv').textContent = fy+' yr'+(fy>1?'s':'');
+
+  const fhsaFV = calcFV(fp, fm, fr2, fy);
+  const fhsaCo = fp + fm * 12 * fy;
+  const fhsaEa = fhsaFV - fhsaCo;
+  const fhsaROI = fhsaCo > 0 ? (fhsaEa / fhsaCo * 100) : 0;
+  const fhsaAnnual = fm * 12;
+  const fhsaDed = Math.min(fhsaAnnual, 8000);
+  const fhsaRefund = fhsaDed * 0.30;
+
+  document.getElementById('fhsa-fv').textContent = fmt(fhsaFV);
+  document.getElementById('fhsa-fv2').textContent = fmt(fhsaFV);
+  document.getElementById('fhsa-co').textContent = fmt(fhsaCo);
+  document.getElementById('fhsa-ea').textContent = fmt(fhsaEa);
+  document.getElementById('fhsa-annual-contrib').textContent = fmt(fhsaAnnual);
+  document.getElementById('fhsa-tax-refund').textContent = fmt(fhsaRefund);
+
+  const fhsaData = calcFVByYear(fp, fm, fr2, fy);
+  const fhsaCtx = document.getElementById('fhsa-chart').getContext('2d');
+  if (ChartFHSA) ChartFHSA.destroy();
+  ChartFHSA = makeLineChart(fhsaCtx, fhsaData, 'rgb(26,122,78)', '#1A7A4E');
+
+  // ── COMBINED ──
+  const combTotal = rrspFV + tfsaFV + fhsaFV;
+  const combContrib = rrspCo + tfsaCo + fhsaCo;
+  const combGrowth = rrspEa + tfsaEa + fhsaEa;
+  const rrspIncome = parseFloat(document.getElementById('rrsp-income').value)||0;
+  const rrspDed = Math.min(rrspAnnualContrib, Math.min(rrspIncome * 0.18, 32490));
+  const fhsaDedComb = Math.min(fhsaAnnual, 8000);
+  const totalDed = rrspDed + fhsaDedComb;
+  const totalRefund = totalDed * 0.30;
+
+  document.getElementById('comb-rrsp').textContent = fmt(rrspFV);
+  document.getElementById('comb-tfsa').textContent = fmt(tfsaFV);
+  document.getElementById('comb-fhsa').textContent = fmt(fhsaFV);
+  document.getElementById('comb-total').textContent = fmt(combTotal);
+  document.getElementById('comb-contrib').textContent = fmt(combContrib);
+  document.getElementById('comb-growth').textContent = fmt(combGrowth);
+  document.getElementById('comb-rrsp-ded').textContent = fmt(rrspDed);
+  document.getElementById('comb-fhsa-ded').textContent = fmt(fhsaDedComb);
+  document.getElementById('comb-total-ded').textContent = fmt(totalDed);
+  document.getElementById('comb-refund').textContent = fmt(totalRefund);
+
+  // Combined stacked area chart — use the longest period as x-axis
+  const maxY = Math.max(ry, ty, fy);
+  const combLabels = [];
+  for (let i = 0; i <= maxY; i++) combLabels.push(i === 0 ? 'Now' : 'Yr ' + i);
+
+  function getValAtYear(p2, m2, r2, maxYears, targetYear) {
+    if (targetYear > maxYears) {
+      // After the account's period ends, value stays at final amount (no more growth shown)
+      return Math.round(calcFV(p2, m2, r2, maxYears));
+    }
+    return Math.round(calcFV(p2, m2, r2, targetYear));
+  }
+
+  const rrspSeries = combLabels.map((_, i) => getValAtYear(rp, rm, rr, ry, i));
+  const tfsaSeries = combLabels.map((_, i) => getValAtYear(tp, tm, tr, ty, i));
+  const fhsaSeries = combLabels.map((_, i) => getValAtYear(fp, fm, fr2, fy, i));
+
+  const combCtx = document.getElementById('comb-chart').getContext('2d');
+  if (ChartComb) ChartComb.destroy();
+  ChartComb = new Chart(combCtx, {
+    type: 'line',
+    data: {
+      labels: combLabels,
+      datasets: [
+        { label: 'RRSP', data: rrspSeries, borderColor: '#1A6A7A', backgroundColor: 'rgba(26,106,122,0.12)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+        { label: 'TFSA', data: tfsaSeries, borderColor: '#B8973A', backgroundColor: 'rgba(184,151,58,0.10)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+        { label: 'FHSA', data: fhsaSeries, borderColor: '#1A7A4E', backgroundColor: 'rgba(26,122,78,0.10)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#777', font: { size: 10, family: "'Inter',sans-serif" }, boxWidth: 10 } } },
+      scales: {
+        x: { ticks: { color: '#777', font: { size: 9 }, maxTicksLimit: 12 }, grid: { display: false } },
+        y: { ticks: { color: '#777', font: { size: 9 }, callback: v => '$' + Math.round(v / 1000) + 'K' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+}
+
+/* LIFE */
+function updKids(){
+  const n=parseInt(document.getElementById('li-nk').value)||0;
+  const w=document.getElementById('li-kw'),kr=document.getElementById('li-kr');
+  w.style.display=n>0?'block':'none';
+  let h='';for(let i=0;i<n;i++)h+=`<div class="cr"><input type="text" placeholder="Child ${i+1} name" oninput="updKS()"><input type="number" placeholder="Age" min="0" max="25" oninput="calcL()"><span class="cdel" onclick="this.closest('.cr').remove();calcL();updKS();">&times;</span></div>`;
+  kr.innerHTML=h;updKS();calcL();
+}
+function updKS(){
+  const rows=document.querySelectorAll('.cr');const el=document.getElementById('li-ks');
+  if(!rows.length){el.innerHTML='<span style="font-size:12px;color:var(--text-muted);font-style:italic;">No children entered.</span>';return;}
+  let h='';rows.forEach((r,i)=>{const nm=r.querySelectorAll('input')[0].value||`Child ${i+1}`;const ag=r.querySelectorAll('input')[1].value;h+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;"><span style="color:var(--text);">${nm}</span><span style="color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${ag?ag+' yrs old':'Age not entered'}</span></div>`;});
+  el.innerHTML=h;
+}
+function calcL(){
+  const inc=V('li-in'),rp=(V('li-rp')||70)/100,ry=V('li-ry')||25;
+  const ir=inc*rp*ry,mo=V('li-mo'),ed=V('li-ed'),bz=V('li-bz'),ex=V('li-ex');
+  const gr=ir+mo+ed+bz,net=Math.max(0,gr-ex);
+  const tOpts=[10,15,20,25,30],st=tOpts.find(t=>t>=ry)||30;
+  document.getElementById('li-gr').textContent=fmt(gr);document.getElementById('li-rec').textContent=fmt(net);document.getElementById('li-gap').textContent=fmt(Math.max(0,gr-ex));document.getElementById('li-tm').textContent=st+' yrs';document.getElementById('li-ry2').textContent=ry+' yrs';
+  const rows2=[{l:'Income Replacement',v:ir,h:ry+' yrs \u00d7 '+fmt(inc*rp)+'/yr'},{l:'Mortgage / Outstanding Debt',v:mo,h:'Outstanding principal'},{l:'Education Fund',v:ed,h:'Post-secondary costs'},{l:'Business Continuity',v:bz,h:'Buy-sell / key person'},{l:'Less: Existing Coverage',v:-ex,h:'Group / employer coverage',sub:true}];
+  let h='';rows2.forEach(r=>{if(r.v===0&&!r.sub)return;h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:12px;color:var(--text-mid);">${r.l}</div><div style="font-size:10px;color:var(--text-muted);">${r.h}</div></div><div style="font-family:'Playfair Display',serif;font-size:13px;color:${r.sub?'var(--green)':'var(--gold)'};">${r.sub?'('+fmt(ex)+')':fmt(r.v)}</div></div>`;});
+  h+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;"><span style="font-size:12px;font-weight:600;color:var(--text);">Recommended Coverage</span><span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);font-weight:700;">${fmt(net)}</span></div>`;
+  document.getElementById('li-bd').innerHTML=h;updKS();
+}
+
+/* CI */
+function calcCI(){
+  const inc=V('c2-in'),mo=parseInt(document.getElementById('c2-rc').value)||6;
+  const dr=V('c2-dr'),tr2=V('c2-tr'),hc=V('c2-hc'),eq=V('c2-eq'),mort=V('c2-mo'),db=V('c2-db'),sv=V('c2-sv');
+  const il=inc*mo,med=dr+tr2+hc+eq,fx=(mort+db)*mo,tot=il+med+fx,rec=Math.max(0,tot-sv);
+  document.getElementById('c2-il').textContent=fmt(il);document.getElementById('c2-md').textContent=fmt(med);document.getElementById('c2-fx').textContent=fmt(fx);document.getElementById('c2-rec').textContent=fmt(rec);
+}
+
+
+function switchMoreTab(tab){
+  ['amort','resp','loan'].forEach(t=>{
+    document.getElementById('more-tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('more-content-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='amort')calcAm();if(tab==='resp')calcRsp();if(tab==='loan')calcLoan();
+}
+
+function shareResults(type){
+  const client=document.getElementById('cname').value||'Client';
+  const g=id=>{const el=document.getElementById(id);return el?el.textContent:'$0';};
+  const msgs={
+    budget:'Budget Summary \u2014 '+client+'\n\nIncome: '+g('b-itot')+'\nExpenses: '+g('b-etot')+'\nSurplus/Deficit: '+g('b-rem')+'\n\nIllustration only \u2014 Eau Claire Partners',
+    debt:'Debt Snowball \u2014 '+client+'\n\nTotal Debt: '+g('d-tot')+'\nTotal Interest: '+g('d-int')+'\nMonths to Debt-Free: '+g('d-mo')+'\n\nIllustration only \u2014 Eau Claire Partners',
+    compound:'Registered Accounts \u2014 '+client+'\n\nRRSP: '+g('rrsp-fv')+'\nTFSA: '+g('tfsa-fv')+'\nFHSA: '+g('fhsa-fv')+'\nCombined: '+g('comb-total')+'\nEst. Annual Tax Refund: '+g('comb-refund')+'\n\nIllustration only \u2014 Eau Claire Partners',
+    life:'Life Insurance \u2014 '+client+'\n\nRecommended Coverage: '+g('li-rec')+'\nGross Need: '+g('li-gr')+'\nSuggested Term: '+g('li-tm')+'\n\nIllustration only \u2014 Eau Claire Partners',
+    ci:'Critical Illness \u2014 '+client+'\n\nRecommended Coverage: '+g('c2-rec')+'\nIncome Lost: '+g('c2-il')+'\nMedical Costs: '+g('c2-md')+'\nFixed Obligations: '+g('c2-fx')+'\n\nIllustration only \u2014 Eau Claire Partners',
+    amort:'Mortgage Summary \u2014 '+client+'\n\nMortgage: '+g('am-principal')+'\nPayment: '+g('am-payment')+'\nTotal Interest: '+g('am-total-int')+'\nTotal Cost: '+g('am-total-cost')+'\n\nIllustration only \u2014 Eau Claire Partners',
+    resp:'RESP Summary \u2014 '+client+'\n\nProjected Total: '+g('rsp-total')+'\nCESG Grants: '+g('rsp-cesg')+'\nGrowth: '+g('rsp-growth')+'\n\nIllustration only \u2014 Eau Claire Partners',
+    loan:'Loan Summary \u2014 '+client+'\n\nPayment: '+g('ln-pmt')+'\nPayoff: '+g('ln-payoff')+'\nTotal Interest: '+g('ln-tint')+'\n\nIllustration only \u2014 Eau Claire Partners',
+  };
+  const text=msgs[type]||'Summary \u2014 Eau Claire Partners';
+  if(navigator.share){navigator.share({title:'ECP Illustration',text});}
+  else{navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard!'));}
+}
+
+/* INIT */
+updKids();
+window.addEventListener('load',()=>{calcB();calcD();calcC();calcL();calcCI();calcAm();calcRsp();calcLoan();});
+
+
+/* AMORTIZATION */
+let AmChart;
+let amMode = 'forward';
+
+function setAmMode(mode) {
+  amMode = mode;
+  const fwdBtn = document.getElementById('am-mode-fwd');
+  const revBtn = document.getElementById('am-mode-rev');
+  const fwdFields = document.getElementById('am-forward-fields');
+  const revFields = document.getElementById('am-reverse-fields');
+  const revResult = document.getElementById('am-reverse-result');
+  const cardTitle = document.getElementById('am-card-title');
+  const lblPrincipal = document.getElementById('am-lbl-principal');
+  const lblPayment = document.getElementById('am-lbl-payment');
+
+  if (mode === 'forward') {
+    fwdBtn.style.background = 'var(--gold)'; fwdBtn.style.color = 'var(--surface)';
+    revBtn.style.background = 'none'; revBtn.style.color = 'var(--text-muted)';
+    fwdFields.style.display = 'block';
+    revFields.style.display = 'none';
+    revResult.style.display = 'none';
+    cardTitle.textContent = 'Mortgage Details';
+    lblPrincipal.textContent = 'Mortgage Amount';
+    lblPayment.textContent = 'Payment Amount';
+  } else {
+    revBtn.style.background = 'var(--gold)'; revBtn.style.color = 'var(--surface)';
+    fwdBtn.style.background = 'none'; fwdBtn.style.color = 'var(--text-muted)';
+    fwdFields.style.display = 'none';
+    revFields.style.display = 'block';
+    revResult.style.display = 'block';
+    cardTitle.textContent = 'Affordability Budget';
+    lblPrincipal.textContent = 'Max Mortgage';
+    lblPayment.textContent = 'Budget Payment';
+  }
+  calcAm();
+}
+
+function calcAm() {
+  const annualRate = V('am-rate') || 5.5;
+  const years = parseInt(document.getElementById('am-years').value) || 25;
+  const freq = parseInt(document.getElementById('am-freq').value) || 12;
+  const extra = V('am-extra');
+  const lump = V('am-lump');
+
+  // Canadian mortgage: semi-annual compounding
+  const semiAnnualRate = annualRate / 100 / 2;
+  const effectiveAnnual = Math.pow(1 + semiAnnualRate, 2) - 1;
+  const rp = Math.pow(1 + effectiveAnnual, 1 / freq) - 1;
+  const n = years * freq;
+  const freqLabel = {12:'Monthly',26:'Bi-Weekly',52:'Weekly'};
+
+  let principal, pmt, downPayment, purchasePrice;
+
+  if (amMode === 'reverse') {
+    // REVERSE: solve for max principal from budget payment
+    const budget = V('am-budget');
+    downPayment = V('am-down-rev');
+    if (!budget) {
+      document.getElementById('am-principal').textContent = '$0';
+      document.getElementById('am-payment').textContent = '$0 / ' + freqLabel[freq];
+      document.getElementById('am-total-int').textContent = '$0';
+      document.getElementById('am-total-cost').textContent = '$0';
+      document.getElementById('am-rev-price').textContent = '$0';
+      document.getElementById('am-rev-principal').textContent = '$0';
+      document.getElementById('am-rev-down').textContent = '$0';
+      document.getElementById('am-rev-downpct').textContent = '0%';
+      document.getElementById('am-rev-cmhc').textContent = '—';
+      document.getElementById('am-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);font-style:italic;padding:20px;">Enter a budget payment above.</td></tr>';
+      return;
+    }
+    // P = PMT × (1 − (1+r)^−n) / r  — solve for principal
+    principal = rp > 0 ? budget * (1 - Math.pow(1 + rp, -n)) / rp : budget * n;
+    pmt = budget;
+    purchasePrice = principal + downPayment;
+
+    // CMHC check (down payment < 20%)
+    const downPct = purchasePrice > 0 ? (downPayment / purchasePrice * 100) : 0;
+    const needsCMHC = downPct < 20 && purchasePrice > 0;
+    const cmhcRate = downPct >= 15 ? 2.8 : downPct >= 10 ? 3.1 : 4.0;
+    const cmhcPremium = needsCMHC ? principal * cmhcRate / 100 : 0;
+
+    document.getElementById('am-rev-price').textContent = fmt(purchasePrice);
+    document.getElementById('am-rev-principal').textContent = fmt(principal);
+    document.getElementById('am-rev-down').textContent = fmt(downPayment);
+    document.getElementById('am-rev-downpct').textContent = fmtP(downPct);
+    document.getElementById('am-rev-cmhc').textContent = needsCMHC
+      ? 'Yes — ' + cmhcRate + '% (' + fmt(cmhcPremium) + ')'
+      : 'No — 20%+ down';
+    document.getElementById('am-rev-cmhc').style.color = needsCMHC ? 'var(--red)' : 'var(--green)';
+    document.getElementById('am-rev-cmhc').style.fontSize = '11px';
+
+  } else {
+    // FORWARD: standard calculation
+    const price = V('am-price');
+    downPayment = V('am-down');
+    principal = Math.max(0, price - downPayment);
+    if (!principal) {
+      document.getElementById('am-principal').textContent = '$0';
+      document.getElementById('am-payment').textContent = '$0';
+      document.getElementById('am-total-int').textContent = '$0';
+      document.getElementById('am-total-cost').textContent = '$0';
+      document.getElementById('am-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);font-style:italic;padding:20px;">Enter mortgage details above.</td></tr>';
+      return;
+    }
+    pmt = rp > 0 ? principal * rp / (1 - Math.pow(1 + rp, -n)) : principal / n;
+  }
+
+  document.getElementById('am-principal').textContent = fmt(principal);
+  document.getElementById('am-payment').textContent = fmt(pmt) + ' / ' + freqLabel[freq];
+
+  // Amortization simulation
+  let bal = principal + (amMode === 'reverse' ? 0 : 0);
+  let totalInt = 0;
+  const annualRows = [];
+  let yearPrincipal = 0, yearInterest = 0;
+  let payCount = 0;
+  const paymentsPerYear = freq;
+
+  while (bal > 0.01) {
+    payCount++;
+    const intPmt = bal * rp;
+    const prinPmt = Math.min(pmt + extra - intPmt, bal);
+    totalInt += intPmt;
+    yearInterest += intPmt;
+    yearPrincipal += prinPmt;
+    bal = Math.max(0, bal - prinPmt - (amMode === 'forward' ? extra : 0));
+
+    if (payCount % paymentsPerYear === 0) {
+      const yearNum = Math.floor(payCount / paymentsPerYear);
+      if (lump > 0 && bal > 0 && amMode === 'forward') {
+        const lumpApplied = Math.min(lump, bal);
+        bal -= lumpApplied; yearPrincipal += lumpApplied;
+      }
+      annualRows.push({ yr: yearNum, prin: yearPrincipal, int: yearInterest, bal: Math.max(0, bal) });
+      yearPrincipal = 0; yearInterest = 0;
+      if (bal <= 0.01) break;
+    }
+    if (payCount > years * freq * 2) break;
+  }
+
+  document.getElementById('am-total-int').textContent = fmt(totalInt);
+  document.getElementById('am-total-cost').textContent = fmt(principal + totalInt);
+
+  // Prepayment note (forward only)
+  const pEl = document.getElementById('am-prepay-result');
+  if (amMode === 'forward' && (extra > 0 || lump > 0)) {
+    const saved = years - annualRows.length;
+    pEl.innerHTML = `<div style="background:var(--green-bg);border:1px solid #9DE0BC;border-radius:var(--rs);padding:10px 12px;font-size:11px;color:var(--green);"><strong>Prepayment Impact:</strong> Mortgage paid off in <strong>${annualRows.length} years</strong> instead of ${years}${saved > 0 ? ' — saving ' + saved + ' year' + (saved !== 1 ? 's' : '') : ''}.</div>`;
+  } else { pEl.innerHTML = ''; }
+
+  // Table
+  let rows = '';
+  annualRows.forEach(r => { rows += `<tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px;">${r.yr}</td><td style="color:var(--green);">${fmt(r.prin)}</td><td style="color:var(--red);">${fmt(r.int)}</td><td style="font-family:'Playfair Display',serif;color:var(--gold);">${fmt(r.bal)}</td></tr>`; });
+  document.getElementById('am-tbody').innerHTML = rows || '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">—</td></tr>';
+
+  // Chart
+  const ctx = document.getElementById('am-chart').getContext('2d');
+  if (AmChart) AmChart.destroy();
+  const step = Math.max(1, Math.floor(annualRows.length / 10));
+  const chartRows = annualRows.filter((_, i) => i % step === 0 || i === annualRows.length - 1);
+  AmChart = new Chart(ctx, { type: 'bar', data: { labels: chartRows.map(r => 'Yr ' + r.yr), datasets: [{ label: 'Remaining Balance', data: chartRows.map(r => Math.round(r.bal)), backgroundColor: '#B8973A', borderRadius: 2 }, { label: 'Cumulative Interest', data: chartRows.map((_, i) => { let s = 0; for (let j = 0; j <= i * step && j < annualRows.length; j++) s += annualRows[j].int; return Math.round(s); }), backgroundColor: 'rgba(192,57,43,0.2)', borderRadius: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#777', font: { size: 10, family: "'Inter',sans-serif" }, boxWidth: 10 } } }, scales: { x: { ticks: { color: '#777', font: { size: 9 } }, grid: { display: false } }, y: { ticks: { color: '#777', font: { size: 9 }, callback: v => '$' + Math.round(v / 1000) + 'K' }, grid: { color: 'rgba(0,0,0,0.05)' } } } } });
+}
+/* RESP */
+let RspChart;
+function calcRsp(){
+  const age=V('rsp-age');
+  const uniAge=parseInt(document.getElementById('rsp-uni').value)||18;
+  const monthly=V('rsp-monthly')||0;
+  const existing=V('rsp-existing')||0;
+  const lump=V('rsp-lump')||0;
+  const rate=parseFloat(document.getElementById('rsp-rate').value)||5;
+  const addlCesg=parseInt(document.getElementById('rsp-income').value)||0;
+  document.getElementById('rsp-rv').textContent=rate+'%';
+
+  const yearsLeft=Math.max(0,uniAge-age);
+  document.getElementById('rsp-years').textContent=yearsLeft+' yr'+(yearsLeft!==1?'s':'');
+
+  if(yearsLeft===0){
+    ['rsp-total','rsp-contrib','rsp-cesg','rsp-growth'].forEach(id=>document.getElementById(id).textContent='$0');
+    return;
+  }
+
+  const annual=monthly*12;
+  const r=rate/100;
+  let balance=existing+lump;
+  let totalContrib=existing+lump;
+  let totalCesg=0;
+  let cesgUsed=0;
+  const CESG_LIFETIME=7200;
+  const CESG_MAX_YEAR=500;
+  const CESG_ELIGIBLE_ANNUAL=2500;
+
+  const chartYears=[],cContrib=[],cCesg=[],cGrowth=[];
+
+  for(let y=0;y<yearsLeft;y++){
+    const currentAge=age+y;
+    const yearContrib=annual;
+    let cesgThisYear=0;
+
+    if(currentAge<18&&cesgUsed<CESG_LIFETIME){
+      const eligible=Math.min(yearContrib,CESG_ELIGIBLE_ANNUAL);
+      const baseCesg=Math.min(eligible*0.20,CESG_MAX_YEAR);
+      const addl=Math.min(500*addlCesg/100,addlCesg>0?addlCesg:0); // simplified
+      const extraCesg=Math.min(addlCesg,eligible>0?addlCesg:0);
+      cesgThisYear=Math.min(baseCesg+extraCesg,CESG_LIFETIME-cesgUsed);
+      cesgUsed+=cesgThisYear;
+    }
+
+    // Grow existing balance, add contributions mid-year, add CESG
+    balance=balance*(1+r)+yearContrib*(1+r/2)+cesgThisYear*(1+r/2);
+    totalContrib+=yearContrib;
+    totalCesg+=cesgThisYear;
+
+    chartYears.push('Age '+(age+y+1));
+    cContrib.push(Math.round(totalContrib));
+    cCesg.push(Math.round(totalCesg));
+    cGrowth.push(Math.round(balance-totalContrib-totalCesg));
+  }
+
+  const growth=Math.max(0,balance-totalContrib-totalCesg);
+  document.getElementById('rsp-total').textContent=fmt(balance);
+  document.getElementById('rsp-contrib').textContent=fmt(totalContrib);
+  document.getElementById('rsp-cesg').textContent=fmt(totalCesg);
+  document.getElementById('rsp-growth').textContent=fmt(growth);
+  document.getElementById('rsp-cesg-rem').textContent=fmt(Math.max(0,CESG_LIFETIME-cesgUsed));
+
+  // Chart
+  const ctx=document.getElementById('rsp-chart').getContext('2d');
+  if(RspChart)RspChart.destroy();
+  RspChart=new Chart(ctx,{type:'bar',data:{labels:chartYears,datasets:[{label:'Contributions',data:cContrib,backgroundColor:'rgba(184,151,58,0.25)',stack:'a'},{label:'CESG Grants',data:cCesg,backgroundColor:'rgba(26,122,78,0.35)',stack:'a'},{label:'Investment Growth',data:cGrowth,backgroundColor:'rgba(184,151,58,0.7)',stack:'a'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#777',font:{size:10,family:"'Inter',sans-serif"},boxWidth:10}}},scales:{x:{stacked:true,ticks:{color:'#777',font:{size:9},maxTicksLimit:10},grid:{display:false}},y:{stacked:true,ticks:{color:'#777',font:{size:9},callback:v=>'$'+Math.round(v/1000)+'K'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+}
+
+
+/* LOAN AMORTIZATION (TransUnion style) */
+let LnPie, LnLine;
+let lnSchedView='monthly';
+let lnMonthlyRows=[], lnAnnualRows=[];
+
+function switchTab(tab){
+  ['breakdown','balance','schedule'].forEach(t=>{
+    const btn=document.getElementById('tab-'+t);
+    const content=document.getElementById('tab-content-'+t);
+    if(t===tab){
+      btn.style.color='var(--gold)';btn.style.borderBottomColor='var(--gold)';btn.style.fontWeight='600';
+      content.style.display='block';
+    } else {
+      btn.style.color='var(--text-muted)';btn.style.borderBottomColor='transparent';btn.style.fontWeight='600';
+      content.style.display='none';
+    }
+  });
+  if(tab==='balance'&&LnLine) LnLine.resize();
+}
+
+function setSchedView(view){
+  lnSchedView=view;
+  const moBtn=document.getElementById('sched-mo-btn');
+  const yrBtn=document.getElementById('sched-yr-btn');
+  if(view==='monthly'){
+    moBtn.style.background='var(--gold-bg)';moBtn.style.color='var(--gold)';
+    yrBtn.style.background='none';yrBtn.style.color='var(--text-muted)';
+    renderSchedule(lnMonthlyRows);
+  } else {
+    yrBtn.style.background='var(--gold-bg)';yrBtn.style.color='var(--gold)';
+    moBtn.style.background='none';moBtn.style.color='var(--text-muted)';
+    renderSchedule(lnAnnualRows);
+  }
+}
+
+function renderSchedule(rows){
+  const tbody=document.getElementById('ln-sched-body');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--text-muted);font-style:italic;padding:20px;">Enter loan details above.</td></tr>';return;}
+  tbody.innerHTML=rows.map(r=>`<tr>
+    <td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);">${r.num}</td>
+    <td style="font-size:11px;color:var(--text-muted);">${r.date}</td>
+    <td style="font-family:'Playfair Display',serif;font-size:12px;color:var(--gold);">${fmt(r.pmt)}</td>
+    <td style="font-size:11px;color:var(--green);">${fmt(r.prin)}</td>
+    <td style="font-size:11px;color:var(--red);">${fmt(r.int)}</td>
+    <td style="font-family:'Playfair Display',serif;font-size:12px;">${fmt(r.bal)}</td>
+  </tr>`).join('');
+}
+
+function calcLoan(){
+  const amount=V('ln-amount');
+  const annualRate=V('ln-rate')||7.5;
+  const termRaw=V('ln-term')||5;
+  const termUnit=document.getElementById('ln-termunit').value;
+  const totalMonths=termUnit==='years'?termRaw*12:termRaw;
+  const freq=parseInt(document.getElementById('ln-freq').value)||12;
+  const extra=V('ln-extra');
+  const lump=V('ln-lump');
+  const lumpAt=Math.max(1,parseInt(document.getElementById('ln-lumpat').value)||1);
+  const startInput=document.getElementById('ln-start').value;
+
+  const freqLabel={12:'per month',26:'bi-weekly',52:'per week'};
+  const freqName={12:'Monthly',26:'Bi-Weekly',52:'Weekly'};
+
+  if(!amount){
+    ['ln-pmt','ln-tint','ln-tcost','ln-pie-prin','ln-pie-int','ln-first-int','ln-first-prin'].forEach(id=>document.getElementById(id).textContent='$0');
+    document.getElementById('ln-pmt-freq').textContent='per month';
+    document.getElementById('ln-payoff').textContent='—';
+    document.getElementById('ln-int-pct').textContent='0%';
+    document.getElementById('ln-breakeven').textContent='—';
+    lnMonthlyRows=[];lnAnnualRows=[];renderSchedule([]);
+    return;
+  }
+
+  // Standard monthly compounding (non-Canadian — general loan)
+  const paymentsTotal=Math.round(totalMonths*(freq/12));
+  const rPeriod=annualRate/100/freq;
+  const pmt=rPeriod>0?amount*rPeriod/(1-Math.pow(1+rPeriod,-paymentsTotal)):amount/paymentsTotal;
+
+  document.getElementById('ln-pmt').textContent=fmt(pmt);
+  document.getElementById('ln-pmt-freq').textContent=freqLabel[freq]||'per month';
+
+  // Parse start date
+  let startDate=startInput?new Date(startInput+'-01'):new Date();
+  const msPerPeriod={12:30.44*24*3600000,26:14*24*3600000,52:7*24*3600000};
+
+  // Full amortization simulation
+  let bal=amount;
+  let totalInt=0, totalPrin=0;
+  lnMonthlyRows=[];lnAnnualRows=[];
+  let yearPrin=0,yearInt=0,yearPmt=0;
+  let breakeven=-1;
+  let firstInt=0,firstPrin=0;
+  let lumpApplied=false;
+
+  for(let i=1;i<=paymentsTotal*3&&bal>0.01;i++){
+    const intPortion=bal*rPeriod;
+    let prinPortion=Math.min(pmt+extra-intPortion,bal);
+    if(prinPortion<0)prinPortion=0;
+
+    if(i===1){firstInt=intPortion;firstPrin=prinPortion;}
+    if(breakeven<0&&prinPortion>=intPortion)breakeven=i;
+
+    totalInt+=intPortion;
+    totalPrin+=prinPortion;
+    bal=Math.max(0,bal-prinPortion);
+
+    // Lump sum
+    if(!lumpApplied&&lump>0&&i===lumpAt){
+      const applied=Math.min(lump,bal);
+      bal-=applied;totalPrin+=applied;yearPrin+=applied;
+      lumpApplied=true;
+    }
+
+    yearPrin+=prinPortion;yearInt+=intPortion;yearPmt+=pmt+extra;
+
+    // Build date string
+    const d=new Date(startDate.getTime()+msPerPeriod[freq]*(i-1));
+    const dateStr=d.toLocaleDateString('en-CA',{year:'numeric',month:'short'});
+
+    lnMonthlyRows.push({num:i,date:dateStr,pmt:pmt+extra,prin:prinPortion,int:intPortion,bal:Math.max(0,bal)});
+
+    // Annual rollup
+    const paymentsPerYear=freq;
+    if(i%paymentsPerYear===0||bal<=0.01){
+      const yr=Math.ceil(i/paymentsPerYear);
+      lnAnnualRows.push({num:'Yr '+yr,date:dateStr,pmt:yearPmt,prin:yearPrin,int:yearInt,bal:Math.max(0,bal)});
+      yearPrin=0;yearInt=0;yearPmt=0;
+    }
+
+    if(bal<=0.01)break;
+  }
+
+  // Payoff date
+  const lastRow=lnMonthlyRows[lnMonthlyRows.length-1];
+  document.getElementById('ln-payoff').textContent=lastRow?lastRow.date:'—';
+
+  document.getElementById('ln-tint').textContent=fmt(totalInt);
+  document.getElementById('ln-tcost').textContent=fmt(amount+totalInt);
+  document.getElementById('ln-pie-prin').textContent=fmt(amount);
+  document.getElementById('ln-pie-int').textContent=fmt(totalInt);
+  document.getElementById('ln-int-pct').textContent=fmtP((amount+totalInt)>0?totalInt/(amount+totalInt)*100:0);
+  document.getElementById('ln-first-int').textContent=fmt(firstInt);
+  document.getElementById('ln-first-prin').textContent=fmt(firstPrin);
+  document.getElementById('ln-breakeven').textContent=breakeven>0?'Payment #'+breakeven:'N/A';
+
+  // Savings note if extra payments
+  const saveEl=document.getElementById('ln-savings-note');
+  if(extra>0||lump>0){
+    const basePmts=paymentsTotal;const actualPmts=lnMonthlyRows.length;
+    const savedPmts=basePmts-actualPmts;
+    const savedMonths=Math.round(savedPmts*12/freq);
+    const baseInt=amount*(pmt*paymentsTotal/amount-1)*paymentsTotal/(paymentsTotal*(freq/12));
+    // Simplified: just show actual interest saved
+    const baseSimPmt=rPeriod>0?amount*rPeriod/(1-Math.pow(1+rPeriod,-paymentsTotal)):amount/paymentsTotal;
+    const baseIntTotal=baseSimPmt*paymentsTotal-amount;
+    const intSaved=Math.max(0,baseIntTotal-totalInt);
+    const pmtsSaved=Math.max(0,savedPmts);
+    saveEl.innerHTML=`<div style="background:var(--green-bg);border:1px solid #9DE0BC;border-radius:var(--rs);padding:10px 12px;font-size:11px;color:var(--green);line-height:1.6;"><strong>Prepayment Impact:</strong> Paid off in <strong>${lnMonthlyRows.length} payments</strong> vs ${paymentsTotal} standard. Saves approximately <strong>${fmt(intSaved)}</strong> in interest${pmtsSaved>0?' and '+pmtsSaved+' payment'+(pmtsSaved!==1?'s':''):''}.</div>`;
+  } else { saveEl.innerHTML=''; }
+
+  // Render current schedule view
+  renderSchedule(lnSchedView==='monthly'?lnMonthlyRows:lnAnnualRows);
+
+  // PIE CHART
+  const pieCtx=document.getElementById('ln-pie').getContext('2d');
+  if(LnPie)LnPie.destroy();
+  LnPie=new Chart(pieCtx,{type:'doughnut',data:{labels:['Principal','Interest'],datasets:[{data:[Math.round(amount),Math.round(totalInt)],backgroundColor:['#B8973A','rgba(192,57,43,0.7)'],borderColor:'#FAFAF8',borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}});
+
+  // LINE CHART: balance over time
+  const lineCtx=document.getElementById('ln-line').getContext('2d');
+  if(LnLine)LnLine.destroy();
+  // Sample every N rows for readability
+  const step=Math.max(1,Math.floor(lnMonthlyRows.length/24));
+  const sampledRows=lnMonthlyRows.filter((_,i)=>i%step===0||i===lnMonthlyRows.length-1);
+  LnLine=new Chart(lineCtx,{type:'line',data:{
+    labels:sampledRows.map(r=>r.date),
+    datasets:[
+      {label:'Remaining Balance',data:sampledRows.map(r=>Math.round(r.bal)),borderColor:'#B8973A',backgroundColor:'rgba(184,151,58,0.08)',fill:true,tension:0.4,pointRadius:0,borderWidth:2},
+      {label:'Cumulative Interest',data:sampledRows.map((_,i)=>{let s=0;for(let j=0;j<=i*step&&j<lnMonthlyRows.length;j++)s+=lnMonthlyRows[j].int;return Math.round(s);}),borderColor:'rgba(192,57,43,0.5)',backgroundColor:'rgba(192,57,43,0.04)',fill:true,tension:0.4,pointRadius:0,borderWidth:1.5,borderDash:[4,3]}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#777',font:{size:10,family:"'Inter',sans-serif"},boxWidth:10}}},scales:{x:{ticks:{color:'#777',font:{size:9},maxTicksLimit:10},grid:{display:false}},y:{ticks:{color:'#777',font:{size:9},callback:v=>'$'+Math.round(v/1000)+'K'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+}
+
+function resetP(type){
+  if(!confirm('Reset all fields?'))return;
+  const panelId=(['amort','resp','loan'].includes(type))?'panel-more':'panel-'+type;
+  document.querySelectorAll('#'+panelId+' input[type=number],#'+panelId+' input[type=text],#'+panelId+' textarea').forEach(el=>el.value='');
+  if(type==='life'){document.getElementById('li-nk').value='0';updKids();}
+  if(type==='budget')calcB();if(type==='debt')calcD();
+  if(type==='compound'){switchCiTab('rrsp');calcC();}
+  if(type==='life')calcL();if(type==='ci')calcCI();
+  if(type==='amort'){setAmMode('forward');document.getElementById('am-rate').value='5.5';calcAm();}
+  if(type==='resp'){document.getElementById('rsp-rate').value='5';calcRsp();}
+  if(type==='loan')calcLoan();
+}
+</script>
+</body>
+</html>
